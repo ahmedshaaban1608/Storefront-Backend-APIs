@@ -9,7 +9,7 @@
     "test": "SET ENV=test&& db-migrate reset --env test && db-migrate --env test up && ts-node node_modules/jasmine/bin/jasmine",
     "watch": "tsc-watch --esModuleInterop src/server.ts --outDir ./build --onSuccess \"node ./build/server.js\"",
     "build": "npx tsc",
-    "start": "npx db-migrate up && node ./build/server.js"
+    "start": "npx db-migrate up && npm run build && node ./build/server.js"
   },
   "author": "Ahmed Shaaban",
   "dependencies": {
