@@ -37,8 +37,8 @@ The storefront backend API project is built using Node.js to cover RESTful APIs 
 `npm install`
 #### 3- create a development database using Postgres
 #### 4- create a testing database using Postgres
-#### 5- create a user and grant all privileges to two databases
-#### 6- create dotenv file and add the following code inside it.
+#### 5- create a user and grant all privileges to the two databases
+#### 6- create a dotenv file and add the following code inside it.
 ```
 # Postgres Databases
 POSTGRES_HOST = 
@@ -55,8 +55,8 @@ SALT_ROUNDS = 10
 # JWT details
 TOKEN_SECRET= 
 ```
-#### 7- add your databases details inside dotenv file
-#### 8- add your own BCRYPT_PASSWORD and TOKEN_SECRET values for hashing password and token
+#### 7- add the details of your database inside the dotenv file
+#### 8- add your own BCRYPT_PASSWORD and TOKEN_SECRET values for hashing and secret token
 #### 9- run prettier script
 `npm run prettier`
 #### 10- run ESlin script
