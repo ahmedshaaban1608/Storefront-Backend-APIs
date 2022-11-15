@@ -1,98 +1,70 @@
+import supertest from 'supertest';
 import Client from '../../database';
+import app from '../../server';
 
-const url = `http://localhost:3200`;
-
+const req = supertest(app);
 describe('test user routes', (): void => {
   let token = '';
   it('1- test creating a user', async (): Promise<void> => {
-    const res = await fetch(`${url}/users`, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    const res = await req
+      .post('/users')
+      .set('Content-Type', 'application/json')
+      .send({
         firstname: 'test',
         lastname: 'user',
         email: 'user@test.com',
         password: '123456',
-      }),
-    });
-    const result = await res.json();
-    token = result.token;
-    expect(result.newUser.id).toEqual(1);
-    expect(result.newUser.email).toEqual('user@test.com');
+      });
+    token = res.body.token;
+    expect(res.body.newUser.id).toEqual(1);
+    expect(res.body.newUser.email).toEqual('user@test.com');
   });
 
   it('2- test showing all users', async (): Promise<void> => {
-    const res = await fetch(`${url}/users`, {
-      method: 'GET',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const result = await res.json();
+    const res = await req.get('/users').set('Authorization', `Bearer ${token}`);
 
     expect(res.status).toBe(200);
-    expect(result.length).toEqual(1);
-    expect(result[0].id).toEqual(1);
-    expect(result[0].email).toEqual('user@test.com');
-    expect(result[0].firstname).toEqual('test');
+    expect(res.body.length).toEqual(1);
+    expect(res.body[0].id).toEqual(1);
+    expect(res.body[0].email).toEqual('user@test.com');
+    expect(res.body[0].firstname).toEqual('test');
   });
 
   it('3- test showing a user with id = 1', async (): Promise<void> => {
-    const res = await fetch(`${url}/users/1`, {
-      method: 'GET',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const result = await res.json();
+    const res = await req
+      .get('/users/1')
+      .set('Authorization', `Bearer ${token}`);
 
     expect(res.status).toBe(200);
-    expect(result.id).toEqual(1);
-    expect(result.email).toEqual('user@test.com');
-    expect(result.firstname).toEqual('test');
+    expect(res.body.id).toEqual(1);
+    expect(res.body.email).toEqual('user@test.com');
+    expect(res.body.firstname).toEqual('test');
   });
 
   it('4- Expect to return a user after successful authentication', async (): Promise<void> => {
-    const res = await fetch(`${url}/users/authenticate`, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
+    const res = await req
+      .post('/users/authenticate')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
         email: 'user@test.com',
         password: '123456',
-      }),
-    });
-    const result = await res.json();
-    token = result.token;
-    expect(result.authenticatdUser.id).toEqual(1);
-    expect(result.authenticatdUser.email).toEqual('user@test.com');
+      });
+
+    token = res.body.token;
+    expect(res.body.authenticatdUser.id).toEqual(1);
+    expect(res.body.authenticatdUser.email).toEqual('user@test.com');
   });
 
   it('5- Expect to return a null after failed authentication', async (): Promise<void> => {
-    const res = await fetch(`${url}/users/authenticate`, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
+    const res = await req
+      .post('/users/authenticate')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
         email: 'user@test.com',
-        password: 'wd6532a',
-      }),
-    });
-    const result = await res.json();
-    expect(result.authenticatdUser).toBeNull();
+        password: 'wad652',
+      });
+
+    expect(res.body.authenticatdUser).toBeNull();
   });
 
   afterAll(async (): Promise<void> => {

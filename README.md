@@ -68,6 +68,7 @@ TOKEN_SECRET=
 #### 13- visit homepage endpoint
 `http://localhost:3200`
 #### 14- for endpoints visit [REQUIRMENTS.md](REQUIREMENTS.md) file
+#### 15- the Postgres database is running on port 5432
 
 [back to top](#table-of-contents)
 

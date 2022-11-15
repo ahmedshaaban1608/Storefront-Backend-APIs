@@ -8,6 +8,7 @@ const app: express.Application = express();
 const port = 3200;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.get('/', function (req: Request, res: Response): void {

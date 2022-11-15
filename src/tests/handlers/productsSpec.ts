@@ -3,44 +3,33 @@ import Client from '../../database';
 import app from '../../server';
 
 const req = supertest(app);
-const url = `http://localhost:3200`;
 
 describe('test Product routes', (): void => {
   let token = '';
   beforeAll(async (): Promise<void> => {
     // create a user
-    const res = await fetch(`${url}/users`, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    const res = await req
+      .post('/users')
+      .set('Content-Type', 'application/json')
+      .send({
         firstname: 'test',
         lastname: 'user',
         email: 'user@test.com',
         password: '123456',
-      }),
-    });
-    const result = await res.json();
-    token = result.token;
+      });
+    token = res.body.token;
   });
 
   it('1- test creating a product', async (): Promise<void> => {
-    const res = await fetch(`${url}/products`, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
+    const res = await req
+      .post(`/products`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
         name: 'shoes',
         price: 300,
-      }),
-    });
-    const products = await res.json();
-    expect(products).toEqual({
+      });
+
+    expect(res.body).toEqual({
       id: 1,
       name: 'shoes',
       price: 300,
@@ -70,19 +59,13 @@ describe('test Product routes', (): void => {
   });
 
   it('4- test deleting a product with id = 1', async (): Promise<void> => {
-    const res = await fetch(`${url}/products`, {
-      method: 'DELETE',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
+    const res = await req
+      .delete(`/products`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
         id: '1',
-      }),
-    });
-    const products = await res.json();
-    expect(products).toEqual({
+      });
+    expect(res.body).toEqual({
       id: 1,
       name: 'shoes',
       price: 300,
